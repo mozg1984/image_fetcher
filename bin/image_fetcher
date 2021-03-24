@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 
+lib_directory = "#{__dir__}/../lib"
+
 require 'optparse'
+require "#{lib_directory}/image_fetcher.rb"
 
 options = {}
 
@@ -14,4 +17,4 @@ OptionParser.new do |parser|
   end
 end.parse!
 
-puts options
+ImageFetcher.new(options).fetch
