@@ -1,1 +1,17 @@
 #!/usr/bin/env ruby
+
+require 'optparse'
+
+options = {}
+
+OptionParser.new do |parser|
+  parser.on("-f", "--file PATH", "The file path with url-links") do |file_path|
+    options[:file_path] = file_path
+  end
+
+  parser.on("-d", "--directory PATH", "The directory path for saving downloaded images") do |directory_path|
+    options[:directory_path] = directory_path
+  end
+end.parse!
+
+puts options
