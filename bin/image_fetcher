@@ -17,4 +17,4 @@ OptionParser.new do |parser|
   end
 end.parse!
 
-CLI::App.new(options).run
+CLI::App.new(options).run!

@@ -18,7 +18,7 @@ module CLI
       @destination = options[:directory_path].to_s
     end
 
-    def run
+    def run!
       check_source!
       check_destination!
 
