@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 
+require 'concurrent'
+require 'yaml'
 require './lib/cli/image_fetcher'
 
 module CLI
   class App
+    MIN_THREADS = 2
+
     class Error < StandardError; end
 
     attr_reader :source, :destination
@@ -16,15 +20,21 @@ module CLI
     def run
       check_source!
       check_destination!
+
       image_url_list.each do |image_url|
         fetch_image(image_url)
       end
+
+      thread_pool.shutdown
+      thread_pool.wait_for_termination
     end
 
     private
 
     def fetch_image(url)
-      CLI::ImageFetcher.new(url, destination).fetch
+      thread_pool.post do
+        CLI::ImageFetcher.new(url, destination).fetch
+      end
     end
 
     def image_url_list
@@ -41,6 +51,18 @@ module CLI
       return if File.directory?(destination)
 
       raise Error, "The given directory #{destination} does not exist"
+    end
+
+    def thread_pool
+      @thread_pool ||= Concurrent::ThreadPoolExecutor.new(
+        min_threads: [settings['thread-pool']['min-threads'].to_i, MIN_THREADS].max,
+        max_threads: [settings['thread-pool']['max-threads'].to_i, Concurrent.processor_count].max,
+        max_queue: 0
+      )
+    end
+
+    def settings
+      @settings ||= YAML.load_file('settings.yml')
     end
   end
 end

@@ -1,0 +1,2 @@
+thread-pool:
+  min-threads: 2
