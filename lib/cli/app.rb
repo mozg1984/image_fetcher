@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'concurrent'
-require 'yaml'
 require './lib/cli/image_fetcher'
+require './lib/cli/settings_accessible'
 
 module CLI
   class App
@@ -10,6 +10,7 @@ module CLI
 
     class Error < StandardError; end
 
+    include CLI::SettingsAccessible
     attr_reader :source, :destination
 
     def initialize(options)
@@ -55,14 +56,10 @@ module CLI
 
     def thread_pool
       @thread_pool ||= Concurrent::ThreadPoolExecutor.new(
-        min_threads: [settings['thread-pool']['min-threads'].to_i, MIN_THREADS].max,
-        max_threads: [settings['thread-pool']['max-threads'].to_i, Concurrent.processor_count].max,
+        min_threads: [settings[:thread_pool][:min_threads].to_i, MIN_THREADS].max,
+        max_threads: [settings[:thread_pool][:max_threads].to_i, Concurrent.processor_count].max,
         max_queue: 0
       )
-    end
-
-    def settings
-      @settings ||= YAML.load_file('settings.yml')
     end
   end
 end
