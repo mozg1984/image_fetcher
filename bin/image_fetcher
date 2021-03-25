@@ -3,18 +3,18 @@
 lib_directory = "#{__dir__}/../lib"
 
 require 'optparse'
-require "#{lib_directory}/image_fetcher.rb"
+require "#{lib_directory}/cli/app.rb"
 
 options = {}
 
 OptionParser.new do |parser|
-  parser.on("-f", "--file PATH", "The file path with url-links") do |file_path|
+  parser.on('-f', '--file PATH', 'The file path with url-links') do |file_path|
     options[:file_path] = file_path
   end
 
-  parser.on("-d", "--directory PATH", "The directory path for saving downloaded images") do |directory_path|
+  parser.on('-d', '--directory PATH', 'The directory path for saving downloaded images') do |directory_path|
     options[:directory_path] = directory_path
   end
 end.parse!
 
-ImageFetcher.new(options).fetch
+CLI::App.new(options).run
