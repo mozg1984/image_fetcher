@@ -12,7 +12,7 @@ RSpec.describe CLI::FileByChunksReadable do
 
   describe '#read_by_chunks' do
     context 'when chunk is larger than the string line' do
-      it 'reads all contant of file' do
+      it 'reads all content of file' do
         file_by_chunks_readable_object.read_by_chunks(file) do |buffer, _|
           expect(buffer).to eq(file_content)
         end
@@ -24,7 +24,7 @@ RSpec.describe CLI::FileByChunksReadable do
         stub_const('CLI::FileByChunksReadable::CHUNK_SIZE', 16)
       end
 
-      it 'reads file contant by chunks' do
+      it 'reads file content by chunks' do
         file_by_chunks_readable_object.read_by_chunks(file) do |buffer, _|
           expect(buffer.split.length).to be < 2
         end
