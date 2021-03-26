@@ -3,6 +3,7 @@
 require 'concurrent'
 require './lib/cli/image_fetcher'
 require './lib/cli/settings_accessible'
+require './lib/cli/file_by_chunks_readable'
 
 module CLI
   class App
@@ -10,7 +11,9 @@ module CLI
 
     class Error < StandardError; end
 
+    include CLI::FileByChunksReadable
     include CLI::SettingsAccessible
+
     attr_reader :source, :destination
 
     def initialize(options)
@@ -22,8 +25,10 @@ module CLI
       check_source!
       check_destination!
 
-      image_url_list.each do |image_url|
-        fetch_image(image_url)
+      read_by_chunks(source) do |buffer, _eof|
+        image_url_list_from(buffer).each do |image_url|
+          fetch_image(image_url)
+        end
       end
 
       thread_pool.shutdown
@@ -38,8 +43,8 @@ module CLI
       end
     end
 
-    def image_url_list
-      File.read(source).split
+    def image_url_list_from(buffer)
+      buffer.split
     end
 
     def check_source!
