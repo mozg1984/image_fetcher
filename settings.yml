@@ -1,6 +1,6 @@
-down:
-  max_redirects: 5
-  max_size: 5242880 # 5 * 1024 * 1024 (5MB)
+:down:
+  :max_redirects: 2
+  :max_size: 5242880 # 5 * 1024 * 1024 (5MB)
 
-thread_pool:
-  min_threads: 2
+:thread_pool:
+  :min_threads: 2

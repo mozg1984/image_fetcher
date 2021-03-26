@@ -13,10 +13,7 @@ module CLI
 
     module ClassMethods
       def settings
-        @settings ||= begin
-          settings_hash = YAML.load_file(FILE_NAME)
-          OpenStruct.new(settings_hash)
-        end
+        @settings ||= YAML.load_file(FILE_NAME)
       end
     end
 
