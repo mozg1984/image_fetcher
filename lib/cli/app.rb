@@ -11,6 +11,10 @@ module CLI
 
     class Error < StandardError; end
 
+    class FileNotFoundError < Error; end
+
+    class DirectoryNotFoundError < Error; end
+
     include CLI::FileByChunksReadable
     include CLI::SettingsAccessible
 
@@ -50,13 +54,13 @@ module CLI
     def check_source!
       return if File.file?(source)
 
-      raise Error, "The given file #{source} does not exist"
+      raise App::FileNotFoundError, "The given file #{source} does not exist"
     end
 
     def check_destination!
       return if File.directory?(destination)
 
-      raise Error, "The given directory #{destination} does not exist"
+      raise App::DirectoryNotFoundError, "The given directory #{destination} does not exist"
     end
 
     def thread_pool
