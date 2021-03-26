@@ -5,6 +5,11 @@ To improve the reliability of downloading files, the gem [down](https://github.c
 
 To increase the speed of downloading files, the gem [concurrent-ruby](https://github.com/ruby-concurrency/concurrent-ruby) was taken as a basis. For optimization purposes, the parallel loading of files is performed on the basis of a pool of threads (analogue from the Java world). The thread pool allows to download files from the minimum (default `= 2`, you can set it in the config file via the field `min_threads`) to the supported number of threads on your machine (or set in the config file via the field `max_threads`). All added files are queued in this thread pool for download one by one.
 
+To improve the reliability of working with the source file with url links, the file is read by chunks. This avoids problems in case of a large file in which all links will be written as one long line (therefore, the usual line-by-line reading is not applied). The image downloading itself is also implemented on the principle of chunked reading. To correct time responses there is a possibility of setting through the fields: `open_timeout` and `read_timeout`.
+
+Also to increase the stability of the application, a check of the size and content type has been added.
+To avoid problems with filename matching at downloading time, names are generated based on a unique random character set (based on `SecureRandom.urlsafe_base64`). These restrictions are set in the fields: `max_size` and `content_type`.
+
 For more detailed settings for downloading files, please refer to the settings file - `settings.yml`.
 
 In cases of abnormal situations with individual downloading files, the downloading process itself is not interrupted. For each case, information will be printed to the `STDOUT`. This eliminates problems associated with incorrect url-links and network problems:
