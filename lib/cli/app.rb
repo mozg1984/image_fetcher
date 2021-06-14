@@ -3,19 +3,15 @@
 require 'concurrent'
 require './lib/cli/image_fetcher'
 require './lib/cli/settings_accessible'
-require './lib/cli/file_by_chunks_readable'
 
 module CLI
   class App
     MIN_THREADS = 2
 
     class Error < StandardError; end
-
     class FileNotFoundError < Error; end
-
     class DirectoryNotFoundError < Error; end
 
-    include CLI::FileByChunksReadable
     include CLI::SettingsAccessible
 
     attr_reader :source, :destination
@@ -29,7 +25,7 @@ module CLI
       check_source!
       check_destination!
 
-      read_by_chunks(source) do |buffer, _eof|
+      File.open(source).each_line do |buffer|
         image_url_list_from(buffer).each do |image_url|
           fetch_image(image_url)
         end
